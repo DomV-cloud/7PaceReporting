@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace TimetrackerReportingClient.Api.Models
+namespace TimetrackerReportingClient.Models.Api
 {
     public class WorkLog
     {

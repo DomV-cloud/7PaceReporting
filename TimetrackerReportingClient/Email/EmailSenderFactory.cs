@@ -1,4 +1,5 @@
 using System;
+using TimetrackerReportingClient.Email.Providers.Microsoft;
 
 namespace TimetrackerReportingClient.Email
 {

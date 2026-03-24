@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using RestSharp;
-using TimetrackerReportingClient.Api.Models;
+using TimetrackerReportingClient.Extensions;
+using TimetrackerReportingClient.Models.Api;
 
 namespace TimetrackerReportingClient.Api
 {
@@ -24,6 +25,9 @@ namespace TimetrackerReportingClient.Api
 
         public TimePaceApiClient(string baseUrl, string token)
         {
+            baseUrl.EnsureStringIsNotNullOrEmpty();
+            token.EnsureStringIsNotNullOrEmpty();
+
             _client = new RestClient(baseUrl.TrimEnd('/'));
             _client.AddDefaultHeader("Authorization", "Bearer " + token);
         }
@@ -51,7 +55,7 @@ namespace TimetrackerReportingClient.Api
 
             while (true)
             {
-                var request = new RestRequest(endpoint, Method.GET);
+                var request = new RestRequest(endpoint, Method.Get);
                 request.AddQueryParameter("$fromTimestamp", fromDate.ToString("o"));
                 request.AddQueryParameter("$toTimestamp", toDate.ToString("o"));
                 request.AddQueryParameter("$count", PageSize.ToString());

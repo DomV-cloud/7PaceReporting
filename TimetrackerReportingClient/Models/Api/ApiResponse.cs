@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace TimetrackerReportingClient.Api.Models
+namespace TimetrackerReportingClient.Models.Api
 {
     /// <summary>
     /// Standard 7pace API envelope: { "data": T } on success, { "error": ... } on failure.
