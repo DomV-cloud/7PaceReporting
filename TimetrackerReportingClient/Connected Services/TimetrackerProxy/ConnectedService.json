@@ -1,0 +1,47 @@
+﻿{
+  "ProviderId": "Unchase.OData.ConnectedService",
+  "Version": "1.3.4.0",
+  "GettingStartedDocument": {
+    "Uri": "http://odata.github.io/odata.net/"
+  },
+  "ExtendedData": {
+    "EnableNamingAlias": false,
+    "IgnoreUnexpectedElementsAndAttributes": false,
+    "GenerateDynamicPropertiesCollection": true,
+    "DynamicPropertiesCollectionName": "DynamicProperties",
+    "IncludeT4File": false,
+    "OperationImportsGenerator": 0,
+    "IncludeExtensionsT4File": false,
+    "GenerateOperationImports": false,
+    "ServiceName": "TimetrackerProxy",
+    "AcceptAllUntrustedCertificates": false,
+    "Endpoint": "https://sample.com/api/odata/v3.0/$metadata",
+    "EdmxVersion": {
+      "Major": 4,
+      "Minor": 0,
+      "Build": 0,
+      "Revision": 0,
+      "MajorRevision": 0,
+      "MinorRevision": 0
+    },
+    "GeneratedFileNamePrefix": "TimetrackerProxy",
+    "UseNameSpacePrefix": false,
+    "NamespacePrefix": null,
+    "UseDataServiceCollection": false,
+    "OpenGeneratedFilesOnComplete": false,
+    "LanguageOption": 0,
+    "FunctionImports": null,
+    "OperationImports": null,
+    "ExcludedOperationImportsNames": "",
+    "UseNetworkCredentials": false,
+    "NetworkCredentialsUserName": null,
+    "NetworkCredentialsPassword": null,
+    "NetworkCredentialsDomain": null,
+    "WebProxyUri": null,
+    "UseWebProxy": false,
+    "UseWebProxyCredentials": false,
+    "WebProxyNetworkCredentialsUserName": null,
+    "WebProxyNetworkCredentialsPassword": null,
+    "WebProxyNetworkCredentialsDomain": null
+  }
+}
