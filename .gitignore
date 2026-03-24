@@ -254,3 +254,5 @@ paket-files/
 # Secrets
 appsettings.json
 graph_token_cache.json
+.claude/
+graph_token_cache.json
