@@ -1,10 +1,9 @@
-using CommandLine;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using TimetrackerReportingClient.Clients.Fakturoid;
 using TimetrackerReportingClient.Clients.TimetrackerReportingClient;
 using TimetrackerReportingClient.Email;
 using TimetrackerReportingClient.Extensions;
+using TimetrackerReportingClient.Helpers;
 using TimetrackerReportingClient.Middleware;
 using TimetrackerReportingClient.Models.Api;
 using TimetrackerReportingClient.Models.CommandLine;
@@ -21,7 +20,6 @@ public class Program
             CommandLineOptions? cmd = null;
             cmd = cmd!.InitCLI(args);
 
-            // Load appsettings.json; CLI args override if provided
             var settings = AppSettings.Load();
             var (year, month) = AskForMonth();
 
@@ -29,15 +27,17 @@ public class Program
             var lastDay = new DateTime(year, month, DateTime.DaysInMonth(year, month));
             Console.WriteLine($"Reporting period: {firstDay:dd.MM.yyyy} – {lastDay:dd.MM.yyyy}");
 
+            // TODO: Registering CLIENT with theyre own ID (nameOf(clientName))
             var client = new TimeTrackerClient(settings.BaseUrl, settings.Token);
 
             var logs = client.GetWorkLogsForMonth(year, month, cmd.AllUsers);
 
-            if (logs.Count == 0)
-            {
-                Console.WriteLine("No work logs found for the selected period.");
-                return;
-            }
+            Ensure.NotEmpty(logs, "No work logs found for the selected period.");
+            //if (logs.Count == 0)
+            //{
+            //    Console.WriteLine("No work logs found for the selected period.");
+            //    return;
+            //}
 
             PrintSummary(logs, year, month);
 
@@ -51,19 +51,6 @@ public class Program
 
             Console.ReadLine();
         });
-    }
-
-    private static CommandLineOptions ParseCmdCommands(string[] args, CommandLineOptions cmd)
-    {
-        Parser
-            .Default.ParseArguments<CommandLineOptions>(args)
-            .WithParsed(x => cmd = x)
-            .WithNotParsed(_ =>
-            {
-                Console.WriteLine("See --help for usage.");
-                Environment.Exit(1);
-            });
-        return cmd;
     }
 
     private static void PrintSummary(List<WorkLog> logs, int year, int month)
