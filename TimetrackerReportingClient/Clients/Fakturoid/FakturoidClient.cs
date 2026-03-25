@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Text;
+using TimetrackerReportingClient.Helpers;
 using TimetrackerReportingClient.Models.Fakturoid;
 
 namespace TimetrackerReportingClient.Clients.Fakturoid;
@@ -13,17 +14,28 @@ namespace TimetrackerReportingClient.Clients.Fakturoid;
 /// Credentials are obtained from: Settings → User account → OAuth 2 credentials
 /// Slug is visible in the URL when logged in: app.fakturoid.cz/api/v3/accounts/{slug}/
 /// </summary>
-public class FakturoidClient(string slug, string clientId, string clientSecret)
+public class FakturoidClient
 {
     private const string BaseUrl = "https://app.fakturoid.cz/api/v3";
     private const string TokenUrl = "https://app.fakturoid.cz/api/v3/oauth/token";
     private const string AppName = "TimePaceInvoicer (pbarabas@example.com)";
 
-    private readonly string _slug = slug;
-    private readonly string _clientId = clientId;
-    private readonly string _clientSecret = clientSecret;
+    private readonly string _slug;
+    private readonly string _clientId;
+    private readonly string _clientSecret;
 
     private string _accessToken;
+
+    public FakturoidClient(string slug, string clientId, string clientSecret)
+    {
+        Ensure.NotNullOrEmpty(slug, nameof(slug));
+        Ensure.NotNullOrEmpty(clientId, nameof(clientId));
+        Ensure.NotNullOrEmpty(clientSecret, nameof(clientSecret));
+
+        _slug = slug;
+        _clientId = clientId;
+        _clientSecret = clientSecret;
+    }
 
     /// <summary>
     /// Creates an invoice in Fakturoid and returns (invoiceId, invoiceNumber, locationUrl).

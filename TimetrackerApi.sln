@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11519.219 insiders
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E97BC72A-480A-4793-BF4E-97563EEA8C1C}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimetrackerReportingClient", "TimetrackerReportingClient\TimetrackerReportingClient.csproj", "{D7140096-F79E-4C43-924E-D45B1E695362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{D0B65E3D-42CF-4B4D-9DBF-C9251EA4A942}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{D7140096-F79E-4C43-924E-D45B1E695362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7140096-F79E-4C43-924E-D45B1E695362}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7140096-F79E-4C43-924E-D45B1E695362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0B65E3D-42CF-4B4D-9DBF-C9251EA4A942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B65E3D-42CF-4B4D-9DBF-C9251EA4A942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0B65E3D-42CF-4B4D-9DBF-C9251EA4A942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0B65E3D-42CF-4B4D-9DBF-C9251EA4A942}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

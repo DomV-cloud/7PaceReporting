@@ -1,13 +1,14 @@
 using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using TimetrackerReportingClient.Api;
-using TimetrackerReportingClient.Email;
 using TimetrackerReportingClient.Clients.Fakturoid;
+using TimetrackerReportingClient.Clients.TimetrackerReportingClient;
+using TimetrackerReportingClient.Email;
+using TimetrackerReportingClient.Extensions;
 using TimetrackerReportingClient.Middleware;
 using TimetrackerReportingClient.Models.Api;
 using TimetrackerReportingClient.Models.CommandLine;
 using TimetrackerReportingClient.Models.Fakturoid;
-using TimetrackerReportingClient.Extensions;
 
 namespace TimetrackerReportingClient;
 
@@ -18,7 +19,6 @@ public class Program
         ExceptionMiddleware.Run(() =>
         {
             CommandLineOptions? cmd = null;
-            // cmd = ParseCmdCommands(args, cmd);
             cmd = cmd!.InitCLI(args);
 
             // Load appsettings.json; CLI args override if provided
@@ -29,7 +29,7 @@ public class Program
             var lastDay = new DateTime(year, month, DateTime.DaysInMonth(year, month));
             Console.WriteLine($"Reporting period: {firstDay:dd.MM.yyyy} – {lastDay:dd.MM.yyyy}");
 
-            var client = new TimePaceApiClient(settings.BaseUrl, settings.Token);
+            var client = new TimeTrackerClient(settings.BaseUrl, settings.Token);
 
             var logs = client.GetWorkLogsForMonth(year, month, cmd.AllUsers);
 
@@ -69,9 +69,7 @@ public class Program
     private static void PrintSummary(List<WorkLog> logs, int year, int month)
     {
         Console.WriteLine();
-        Console.WriteLine(
-            $"=== Work Log Summary — {new DateTime(year, month, 1):MMMM yyyy} ==="
-        );
+        Console.WriteLine($"=== Work Log Summary — {new DateTime(year, month, 1):MMMM yyyy} ===");
         Console.WriteLine();
 
         // Group by date, sum hours per day
@@ -104,9 +102,7 @@ public class Program
 
     private static void Export(string format, List<WorkLog> logs, int year, int month)
     {
-        var dir = Path.GetDirectoryName(
-            System.Reflection.Assembly.GetExecutingAssembly().Location
-        );
+        var dir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         var fileName = $"worklogs_{year}_{month:D2}";
 
         if (format.Equals("json", StringComparison.OrdinalIgnoreCase))
@@ -216,14 +212,9 @@ public class Program
         Console.WriteLine($"  Saved to  {pdfPath}");
 
         // ── Send email ────────────────────────────────────────────────
-        if (
-            string.IsNullOrEmpty(settings.EmailFrom)
-            || string.IsNullOrEmpty(settings.EmailTo)
-        )
+        if (string.IsNullOrEmpty(settings.EmailFrom) || string.IsNullOrEmpty(settings.EmailTo))
         {
-            Console.WriteLine(
-                "  Skipping email: emailFrom / emailTo not set in appsettings.json."
-            );
+            Console.WriteLine("  Skipping email: emailFrom / emailTo not set in appsettings.json.");
             return;
         }
 
@@ -231,16 +222,9 @@ public class Program
         if (Console.ReadLine()?.Trim().ToLower() != "y")
             return;
 
-        Console.WriteLine(
-            $"  Sending email via provider '{settings.EmailProvider ?? "smtp"}'…"
-        );
+        Console.WriteLine($"  Sending email via provider '{settings.EmailProvider ?? "smtp"}'…");
         var emailSender = EmailSenderFactory.Create(settings);
-        emailSender.SendInvoice(
-            invoiceNumber,
-            settings.EmailFrom,
-            settings.EmailTo,
-            pdfBytes
-        );
+        emailSender.SendInvoice(invoiceNumber, settings.EmailFrom, settings.EmailTo, pdfBytes);
         Console.WriteLine($"  Email sent to {settings.EmailTo}.");
     }
 
@@ -248,51 +232,18 @@ public class Program
     {
         while (true)
         {
-            Console.Write("Which month do you need? (e.g. April): ");
+            Console.Write(
+                "Which month do you need? (supported formats e.g. April, april, 4, or 04): "
+            );
             var input = Console.ReadLine()?.Trim();
 
             if (string.IsNullOrEmpty(input))
                 continue;
 
             // Try parsing as a month name (English)
-            if (
-                DateTime.TryParseExact(
-                    input,
-                    "MMMM",
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.None,
-                    out var parsed
-                )
-            )
-            {
-                return (DateTime.Today.Year, parsed.Month);
-            }
+            var parsedMonth = input.ParseToMonth();
 
-            // Also accept short names: Jan, Feb, Mar...
-            if (
-                DateTime.TryParseExact(
-                    input,
-                    "MMM",
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.None,
-                    out parsed
-                )
-            )
-            {
-                return (DateTime.Today.Year, parsed.Month);
-            }
-
-            // Also accept a number: 4 or 04
-            if (
-                int.TryParse(input, out int monthNumber)
-                && monthNumber >= 1
-                && monthNumber <= 12
-            )
-                return (DateTime.Today.Year, monthNumber);
-
-            Console.WriteLine(
-                $"  Could not parse '{input}' as a month. Try: April, Apr, or 4."
-            );
+            return parsedMonth;
         }
     }
 
