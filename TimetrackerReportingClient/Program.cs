@@ -142,11 +142,13 @@ public class Program
         var issuedOn = new DateTime(year, month, DateTime.DaysInMonth(year, month));
         var dueOn = issuedOn.AddDays(settings.DueDays);
 
-        // Group work logs by work item, sum hours per item
-        var lines = logs.GroupBy(l => l.WorkItemId)
+        // Group work logs by comment (task description), sum hours per task
+        var lines = logs.GroupBy(l =>
+                string.IsNullOrWhiteSpace(l.Comment) ? $"#{l.WorkItemId}" : l.Comment.Trim()
+            )
             .Select(g => new InvoiceLine
             {
-                Name = $"#{g.Key}",
+                Name = g.Key,
                 Quantity = Math.Round(g.Sum(l => l.Hours), 2)
                     .ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
                 Unit = "hod",
